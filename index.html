@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+  <title>Cinema Hub · movies & entertainment</title>
+  <!-- Font Awesome 5 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+    }
+    body {
+      background-color: #0b0e11;
+      color: #e8edf2;
+      line-height: 1.5;
+      padding-bottom: 2rem;
+    }
+    a {
+      color: #e8edf2;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* header / navbar */
+    .navbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #2a2f35;
+      background: #0b0e11;
+    }
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #e50914, #b20710);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo i {
+      -webkit-text-fill-color: #e50914;
+      margin-right: 6px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      font-weight: 500;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      transition: 0.2s;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover {
+      border-bottom-color: #e50914;
+      color: #fff;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-right .admin-badge {
+      background: #1f262e;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #b0b9c4;
+    }
+
+    /* search row - compact on mobile */
+    .search-section {
+      margin: 1.2rem 0 1.8rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      background: #141a20;
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      border: 1px solid #2e363f;
+    }
+    .search-section i {
+      color: #8e99a6;
+      font-size: 1rem;
+    }
+    .search-section input {
+      flex: 1;
+      min-width: 140px;
+      background: transparent;
+      border: none;
+      padding: 0.5rem 0.2rem;
+      color: #f0f4f9;
+      font-size: 1rem;
+      outline: none;
+    }
+    .search-section input::placeholder {
+      color: #7a8796;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.8rem;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .filter-group select {
+      background: #232b33;
+      border: none;
+      color: #dce3ec;
+      padding: 0.3rem 0.6rem;
+      border-radius: 30px;
+      outline: none;
+      font-size: 0.8rem;
+    }
+
+    /* movie cards grid */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-title i {
+      color: #e50914;
+    }
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .movie-card {
+      background: #171e26;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.25s ease;
+      cursor: default;
+      border: 1px solid #2b333d;
+    }
+    .movie-card:hover {
+      transform: scale(1.02);
+      border-color: #e50914;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+    }
+    .movie-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: #202a33;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      color: #4f5d6b;
+      background-size: cover;
+      background-position: center;
+    }
+    .movie-info {
+      padding: 0.7rem 0.7rem 1rem;
+    }
+    .movie-info h4 {
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .movie-info .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      color: #a3b1c2;
+      margin-top: 4px;
+    }
+    .movie-info .meta i {
+      margin-right: 3px;
+    }
+    .badge-rate {
+      background: #1e2a36;
+      padding: 0.1rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* individual movie page (hidden by default) */
+    .movie-detail-page {
+      background: #0f151c;
+      padding: 1.5rem 1rem;
+      border-radius: 24px;
+      margin: 1.5rem 0;
+      border: 1px solid #2b333d;
+    }
+    .detail-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .detail-poster {
+      flex: 0 0 200px;
+      background: #1f2935;
+      border-radius: 20px;
+      aspect-ratio: 2/3;
+      background-size: cover;
+      background-position: center;
+    }
+    .detail-content {
+      flex: 1;
+      min-width: 240px;
+    }
+    .detail-content h2 {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+    }
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.8rem;
+      font-size: 0.9rem;
+      color: #b2c0d0;
+      margin: 0.5rem 0 1rem;
+    }
+    .trailer-wrap {
+      margin: 1rem 0;
+      background: #0b1015;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+    .trailer-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .comment-section {
+      margin-top: 2rem;
+      background: #121a22;
+      padding: 1.2rem;
+      border-radius: 20px;
+    }
+    .comment-box {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin: 0.6rem 0;
+    }
+    .comment-box input {
+      flex: 1;
+      background: #1d2732;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      color: white;
+    }
+    .comment-box button {
+      background: #e50914;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* admin panel */
+    .admin-panel {
+      background: #111a22;
+      border: 1px solid #2f3a45;
+      border-radius: 28px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      display: none; /* hidden by default, toggled by login */
+    }
+    .admin-panel.active {
+      display: block;
+    }
+    .admin-login {
+      background: #0f161e;
+      padding: 1.5rem;
+      border-radius: 24px;
+      max-width: 380px;
+      margin: 1rem auto;
+      border: 1px solid #2f3a45;
+    }
+    .admin-login input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      margin: 0.4rem 0;
+      background: #1d2732;
+      border: none;
+      border-radius: 40px;
+      color: white;
+    }
+    .admin-login button {
+      background: #e50914;
+      border: none;
+      padding: 0.7rem;
+      width: 100%;
+      border-radius: 40px;
+      font-weight: 700;
+      color: white;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+
+    .admin-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .admin-form input, .admin-form textarea, .admin-form select {
+      background: #1d2732;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      color: white;
+    }
+    .admin-form .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .admin-form .row > * {
+      flex: 1 1 180px;
+    }
+    .admin-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin: 0.6rem 0;
+    }
+    .admin-actions button {
+      background: #2f3a45;
+      border: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+    }
+    .admin-actions .delete {
+      background: #7a1f2a;
+    }
+    .admin-actions .edit {
+      background: #1f5f7a;
+    }
+
+    /* footer */
+    .footer {
+      margin-top: 3rem;
+      border-top: 1px solid #202830;
+      padding: 2rem 0 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #8b99a8;
+    }
+    .footer a {
+      color: #b2c3d4;
+      margin-right: 1.2rem;
+    }
+    .social i {
+      font-size: 1.3rem;
+      margin: 0 0.3rem;
+      color: #7e8d9e;
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .search-section {
+        padding: 0.4rem 0.8rem;
+        margin: 0.6rem 0 1rem 0;
+        border-radius: 60px;
+        flex-wrap: wrap;
+      }
+      .search-section input {
+        height: 50px; /* compact height */
+        padding: 0.3rem 0.4rem;
+        font-size: 0.95rem;
+        min-width: 100px;
+      }
+      .filter-group select {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+      }
+      .search-section i {
+        font-size: 0.9rem;
+      }
+      .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+      }
+      .detail-poster {
+        flex: 0 0 140px;
+      }
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+      .nav-links {
+        justify-content: center;
+        gap: 0.8rem;
+        font-size: 0.9rem;
+      }
+      .nav-right {
+        justify-content: center;
+      }
+      .admin-login {
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .search-section input {
+        height: 54px;
+        font-size: 0.9rem;
+      }
+      .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+      }
+    }
+    .hidden {
+      display: none;
+    }
+    .mt-1 { margin-top: 1rem; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-film"></i>Cinema Hub</div>
+    <div class="nav-links">
+      <a href="#" onclick="showHome()">Home</a>
+      <a href="#" onclick="showBlog()">Blog</a>
+      <a href="#" onclick="showAbout()">About</a>
+      <a href="#" onclick="showContact()">Contact</a>
+    </div>
+    <div class="nav-right">
+      <span class="admin-badge" id="adminStatus"><i class="fas fa-user-shield"></i> Admin</span>
+      <a href="#" onclick="toggleAdmin()"><i class="fas fa-cog"></i></a>
+    </div>
+  </nav>
+
+  <!-- SEARCH (compact) -->
+  <div class="search-section" id="searchSection">
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Search movies..." oninput="filterMovies()" />
+    <div class="filter-group">
+      <select id="genreFilter" onchange="filterMovies()"><option value="">Genre</option><option>Action</option><option>Drama</option><option>Comedy</option><option>Sci-Fi</option></select>
+      <select id="yearFilter" onchange="filterMovies()"><option value="">Year</option><option>2025</option><option>2024</option><option>2023</option></select>
+      <select id="ratingFilter" onchange="filterMovies()"><option value="">Rating</option><option>7+</option><option>8+</option></select>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="homePage">
+    <div class="section-title"><i class="fas fa-fire"></i> Trending</div>
+    <div class="movie-grid" id="trendingGrid"></div>
+    <div class="section-title"><i class="fas fa-star"></i> Top Rated</div>
+    <div class="movie-grid" id="topRatedGrid"></div>
+    <div class="section-title"><i class="fas fa-clock"></i> New Releases</div>
+    <div class="movie-grid" id="newReleasesGrid"></div>
+  </div>
+
+  <!-- MOVIE DETAIL (hidden by default) -->
+  <div id="movieDetail" class="movie-detail-page hidden">
+    <div class="detail-row">
+      <div class="detail-poster" id="detailPoster" style="background-image: url('');"></div>
+      <div class="detail-content">
+        <h2 id="detailTitle">Movie Title</h2>
+        <div class="detail-meta" id="detailMeta"><span><i class="fas fa-calendar"></i> 2025</span><span><i class="fas fa-star" style="color:gold;"></i> 8.4</span><span><i class="fas fa-tag"></i> Action</span><span><i class="fas fa-language"></i> English</span></div>
+        <p id="detailStory">Storyline goes here.</p>
+        <div class="trailer-wrap" id="trailerWrap">
+          <iframe id="trailerIframe" src="" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div><i class="fas fa-user-tie"></i> Director: <span id="detailDirector">Christopher Nolan</span> &nbsp; <i class="fas fa-users"></i> Cast: <span id="detailCast">Actor A, Actor B</span></div>
+        <div class="comment-section">
+          <h4><i class="fas fa-comment"></i> Comments</h4>
+          <div id="commentsList"><p style="color:#8b99a8;">No comments yet.</p></div>
+          <div class="comment-box">
+            <input type="text" id="commentInput" placeholder="Write a comment..." />
+            <button onclick="addComment()">Post</button>
+          </div>
+        </div>
+        <div style="margin: 0.8rem 0;">
+          <a href="#" onclick="shareMovie()"><i class="fab fa-facebook"></i></a>
+          <a href="#" onclick="shareMovie()"><i class="fab fa-twitter"></i></a>
+          <a href="#" onclick="shareMovie()"><i class="fab fa-reddit"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG / ABOUT / CONTACT (stubs) -->
+  <div id="blogPage" class="hidden"><h2>🎬 Movie News & Reviews</h2><p>Stay tuned for latest updates.</p></div>
+  <div id="aboutPage" class="hidden"><h2>About Cinema Hub</h2><p>Your ultimate movie destination.</p></div>
+  <div id="contactPage" class="hidden"><h2>Contact Us</h2><p>Email: info@cinemahub.com</p></div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="admin-panel">
+    <div id="adminLoginDiv" class="admin-login">
+      <h4>Admin Access</h4>
+      <input type="text" id="adminUser" placeholder="Username" value="admin" />
+      <input type="password" id="adminPass" placeholder="Password" value="admin123" />
+      <button onclick="adminLogin()">Login</button>
+    </div>
+    <div id="adminDash" class="hidden">
+      <h3><i class="fas fa-dashboard"></i> Dashboard</h3>
+      <div class="admin-form">
+        <input type="text" id="movieTitle" placeholder="Movie title" />
+        <textarea id="movieStory" placeholder="Storyline" rows="2"></textarea>
+        <div class="row">
+          <input type="text" id="moviePoster" placeholder="Poster URL (or color)" />
+          <input type="text" id="movieTrailer" placeholder="YouTube URL or embed" />
+        </div>
+        <div class="row">
+          <input type="text" id="movieGenre" placeholder="Genre" />
+          <input type="text" id="movieYear" placeholder="Year" />
+          <input type="text" id="movieRating" placeholder="Rating (e.g. 8.2)" />
+        </div>
+        <div class="row">
+          <input type="text" id="movieDirector" placeholder="Director" />
+          <input type="text" id="movieCast" placeholder="Cast (comma separated)" />
+        </div>
+        <button onclick="addMovie()" style="background:#e50914; border:none; padding:0.6rem; border-radius:40px; color:white; font-weight:700;">Publish Movie</button>
+      </div>
+      <hr style="border-color:#2f3a45; margin:1.2rem 0;" />
+      <h4>Manage Movies</h4>
+      <div id="adminMovieList" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>© 2026 Cinema Hub · <a href="#">Privacy</a> <a href="#">Terms</a></div>
+    <div class="social"><i class="fab fa-instagram"></i><i class="fab fa-youtube"></i><i class="fab fa-tiktok"></i></div>
+  </div>
+</div>
+
+<script>
+  // ---------- DATA ----------
+  let movies = [
+    { id: 1, title: 'Dune: Part Two', genre: 'Sci-Fi', year: '2024', rating: '8.7', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=Dune+2', trailer: 'https://www.youtube.com/watch?v=U2Qp5pL3vNA', director: 'Denis Villeneuve', cast: 'Timothée Chalamet, Zendaya', story: 'Paul Atreides continues his journey on Arrakis.' },
+    { id: 2, title: 'Oppenheimer', genre: 'Drama', year: '2023', rating: '8.4', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=Oppenheimer', trailer: 'https://www.youtube.com/watch?v=uYPbbksJxIg', director: 'Christopher Nolan', cast: 'Cillian Murphy, Emily Blunt', story: 'The story of J. Robert Oppenheimer.' },
+    { id: 3, title: 'The Batman', genre: 'Action', year: '2022', rating: '7.8', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=Batman', trailer: 'https://www.youtube.com/watch?v=mqqft2x_Aa4', director: 'Matt Reeves', cast: 'Robert Pattinson, Zoë Kravitz', story: 'Batman uncovers corruption in Gotham.' },
+    { id: 4, title: 'Spider-Man: No Way Home', genre: 'Action', year: '2021', rating: '8.2', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=Spider-Man', trailer: 'https://www.youtube.com/watch?v=JfVOs4VSpmA', director: 'Jon Watts', cast: 'Tom Holland, Zendaya', story: 'Peter Parker seeks help from Doctor Strange.' },
+    { id: 5, title: 'Avatar: Way of Water', genre: 'Sci-Fi', year: '2022', rating: '7.6', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=Avatar+2', trailer: 'https://www.youtube.com/watch?v=d9MyW72ELq0', director: 'James Cameron', cast: 'Sam Worthington, Zoe Saldana', story: 'The Sully family explores Pandora.' },
+    { id: 6, title: 'John Wick 4', genre: 'Action', year: '2023', rating: '7.9', poster: 'https://via.placeholder.com/300x450/1f2935/white?text=John+Wick+4', trailer: 'https://www.youtube.com/watch?v=qEVUtrk8_B4', director: 'Chad Stahelski', cast: 'Keanu Reeves, Donnie Yen', story: 'John Wick takes on the High Table.' }
+  ];
+  let comments = {};
+
+  // ---------- RENDER ----------
+  function renderGrids() {
+    const trending = movies.slice(0,3);
+    const topRated = [...movies].sort((a,b)=>parseFloat(b.rating)-parseFloat(a.rating)).slice(0,3);
+    const newReleases = movies.slice(3,6);
+    renderMovies('trendingGrid', trending);
+    renderMovies('topRatedGrid', topRated);
+    renderMovies('newReleasesGrid', newReleases);
+  }
+
+  function renderMovies(gridId, movieList) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    if (!movieList || movieList.length===0) {
+      grid.innerHTML = '<div style="color:#6a7a8a;">No movies</div>';
+      return;
+    }
+    grid.innerHTML = movieList.map(m => `
+      <div class="movie-card" onclick="openMovie(${m.id})">
+        <div class="movie-poster" style="background-image: url('${m.poster}');"></div>
+        <div class="movie-info">
+          <h4>${m.title}</h4>
+          <div class="meta"><span><i class="fas fa-star" style="color:gold;"></i> ${m.rating}</span><span>${m.year}</span></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openMovie(id) {
+    const movie = movies.find(m=>m.id===id);
+    if (!movie) return;
+    document.getElementById('homePage').classList.add('hidden');
+    document.getElementById('movieDetail').classList.remove('hidden');
+    document.getElementById('detailPoster').style.backgroundImage = `url('${movie.poster}')`;
+    document.getElementById('detailTitle').innerText = movie.title;
+    document.getElementById('detailStory').innerText = movie.story;
+    document.getElementById('detailDirector').innerText = movie.director;
+    document.getElementById('detailCast').innerText = movie.cast;
+    document.getElementById('detailMeta').innerHTML = `<span><i class="fas fa-calendar"></i> ${movie.year}</span><span><i class="fas fa-star" style="color:gold;"></i> ${movie.rating}</span><span><i class="fas fa-tag"></i> ${movie.genre}</span>`;
+    // youtube embed
+    const trailer = movie.trailer || '';
+    let embedUrl = '';
+    if (trailer.includes('watch?v=')) {
+      const vid = trailer.split('v=')[1]?.split('&')[0];
+      if (vid) embedUrl = `https://www.youtube.com/embed/${vid}`;
+    } else if (trailer.includes('youtu.be/')) {
+      const vid = trailer.split('youtu.be/')[1]?.split('?')[0];
+      if (vid) embedUrl = `https://www.youtube.com/embed/${vid}`;
+    } else if (trailer.includes('embed/')) {
+      embedUrl = trailer;
+    }
+    document.getElementById('trailerIframe').src = embedUrl || '';
+    // comments
+    const commentList = document.getElementById('commentsList');
+    const movieComments = comments[id] || [];
+    if (movieComments.length) {
+      commentList.innerHTML = movieComments.map(c=>`<div><strong>👤</strong> ${c}</div>`).join('');
+    } else {
+      commentList.innerHTML = '<p style="color:#8b99a8;">No comments yet.</p>';
+    }
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function addComment() {
+    const input = document.getElementById('commentInput');
+    const movieId = getCurrentMovieId();
+    if (!movieId || !input.value.trim()) return;
+    if (!comments[movieId]) comments[movieId] = [];
+    comments[movieId].push(input.value.trim());
+    input.value = '';
+    openMovie(movieId);
+  }
+
+  function getCurrentMovieId() {
+    const title = document.getElementById('detailTitle').innerText;
+    const movie = movies.find(m=>m.title===title);
+    return movie ? movie.id : null;
+  }
+
+  function shareMovie() { alert('Share functionality: copy link'); }
+
+  // FILTER
+  function filterMovies() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const genre = document.getElementById('genreFilter').value;
+    const year = document.getElementById('yearFilter').value;
+    const rating = document.getElementById('ratingFilter').value;
+    const filtered = movies.filter(m => {
+      const matchTitle = m.title.toLowerCase().includes(q);
+      const matchGenre = !genre || m.genre===genre;
+      const matchYear = !year || m.year===year;
+      const matchRating = !rating || (rating==='7+' && parseFloat(m.rating)>=7) || (rating==='8+' && parseFloat(m.rating)>=8);
+      return matchTitle && matchGenre && matchYear && matchRating;
+    });
+    renderMovies('trendingGrid', filtered);
+    document.getElementById('topRatedGrid').innerHTML = '';
+    document.getElementById('newReleasesGrid').innerHTML = '';
+    // show only filtered in trending grid
+  }
+
+  // ADMIN
+  function toggleAdmin() {
+    const panel = document.getElementById('adminPanel');
+    panel.classList.toggle('active');
+    if (panel.classList.contains('active')) {
+      document.getElementById('adminLoginDiv').classList.remove('hidden');
+      document.getElementById('adminDash').classList.add('hidden');
+    }
+  }
+
+  function adminLogin() {
+    const user = document.getElementById('adminUser').value;
+    const pass = document.getElementById('adminPass').value;
+    if (user==='admin' && pass==='admin123') {
+      document.getElementById('adminLoginDiv').classList.add('hidden');
+      document.getElementById('adminDash').classList.remove('hidden');
+      renderAdminMovieList();
+      document.getElementById('adminStatus').innerHTML = '<i class="fas fa-user-shield"></i> Admin (logged)';
+    } else {
+      alert('Invalid credentials');
+    }
+  }
+
+  function renderAdminMovieList() {
+    const list = document.getElementById('adminMovieList');
+    list.innerHTML = movies.map(m => `
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; background:#1a232c; padding:0.4rem 0.8rem; border-radius:40px; align-items:center;">
+        <span style="flex:1;">${m.title} (${m.year})</span>
+        <div class="admin-actions">
+          <button class="edit" onclick="editMovie(${m.id})"><i class="fas fa-edit"></i></button>
+          <button class="delete" onclick="deleteMovie(${m.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addMovie() {
+    const title = document.getElementById('movieTitle').value.trim();
+    if (!title) return alert('Title required');
+    const movie = {
+      id: Date.now(),
+      title,
+      genre: document.getElementById('movieGenre').value || 'Unknown',
+      year: document.getElementById('movieYear').value || '2025',
+      rating: document.getElementById('movieRating').value || '7.0',
+      poster: document.getElementById('moviePoster').value || 'https://via.placeholder.com/300x450/1f2935/white?text=New+Movie',
+      trailer: document.getElementById('movieTrailer').value || '',
+      director: document.getElementById('movieDirector').value || 'Unknown',
+      cast: document.getElementById('movieCast').value || 'Cast',
+      story: document.getElementById('movieStory').value || 'Amazing movie.'
+    };
+    movies.push(movie);
+    clearAdminForm();
+    renderGrids();
+    renderAdminMovieList();
+    filterMovies();
+    alert('Movie published!');
+  }
+
+  function deleteMovie(id) {
+    if (confirm('Delete this movie?')) {
+      movies = movies.filter(m=>m.id!==id);
+      renderGrids();
+      renderAdminMovieList();
+      filterMovies();
+    }
+  }
+
+  function editMovie(id) {
+    const m = movies.find(m=>m.id===id);
+    if (!m) return;
+    document.getElementById('movieTitle').value = m.title;
+    document.getElementById('movieStory').value = m.story;
+    document.getElementById('moviePoster').value = m.poster;
+    document.getElementById('movieTrailer').value = m.trailer;
+    document.getElementById('movieGenre').value = m.genre;
+    document.getElementById('movieYear').value = m.year;
+    document.getElementById('movieRating').value = m.rating;
+    document.getElementById('movieDirector').value = m.director;
+    document.getElementById('movieCast').value = m.cast;
+    deleteMovie(id); // remove old, then publish edited
+  }
+
+  function clearAdminForm() {
+    ['movieTitle','movieStory','moviePoster','movieTrailer','movieGenre','movieYear','movieRating','movieDirector','movieCast'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  // PAGE NAV
+  function showHome() {
+    document.querySelectorAll('#homePage, #movieDetail, #blogPage, #aboutPage, #contactPage').forEach(el => el.classList.add('hidden'));
+    document.getElementById('homePage').classList.remove('hidden');
+    renderGrids();
+  }
+  function showBlog() { document.querySelectorAll('#homePage, #movieDetail, #blogPage, #aboutPage, #contactPage').forEach(el => el.classList.add('hidden')); document.getElementById('blogPage').classList.remove('hidden'); }
+  function showAbout() { document.querySelectorAll('#homePage, #movieDetail, #blogPage, #aboutPage, #contactPage').forEach(el => el.classList.add('hidden')); document.getElementById('aboutPage').classList.remove('hidden'); }
+  function showContact() { document.querySelectorAll('#homePage, #movieDetail, #blogPage, #aboutPage, #contactPage').forEach(el => el.classList.add('hidden')); document.getElementById('contactPage').classList.remove('hidden'); }
+
+  // INIT
+  renderGrids();
+</script>
+</body>
+</html>
